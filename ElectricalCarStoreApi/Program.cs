@@ -18,6 +18,9 @@ db?.Database.MigrateAsync();
 app.MapGet("/cars", async (CarDb db) =>
     await db.Cars.ToListAsync());
 
+app.MapGet("/cars/ids", async (CarDb db) =>
+    await db.Cars.Select(c => c.Id).ToListAsync());
+
 //app.MapGet("/car/complete", async (CarDb db) =>
 //    await db.Cars.Where(t => t.IsComplete).ToListAsync());
 
