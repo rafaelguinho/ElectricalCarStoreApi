@@ -34,5 +34,18 @@ namespace ElectricalCarStoreApi.Models
 
         [JsonPropertyName("city")]
         public string? City { get; set; }
+
+
+        [JsonPropertyName("plateLastNumber")]
+        public string? PlateLastNumber { get; set; }
+
+
+        [JsonPropertyName("transmissionType")]
+        public string? TransmissionType { get; set; }
+
+        [JsonPropertyName("color")]
+        public string? Color { get; set; }
+
+
     }
 }

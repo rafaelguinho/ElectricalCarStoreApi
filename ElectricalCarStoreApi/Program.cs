@@ -21,9 +21,6 @@ app.MapGet("/cars", async (CarDb db) =>
 app.MapGet("/cars/ids", async (CarDb db) =>
     await db.Cars.Select(c => c.Id).ToListAsync());
 
-//app.MapGet("/car/complete", async (CarDb db) =>
-//    await db.Cars.Where(t => t.IsComplete).ToListAsync());
-
 app.MapGet("/cars/{id:guid}", async (Guid id, CarDb db) =>
     await db.Cars.FindAsync(id)
         is Car car
@@ -54,6 +51,10 @@ app.MapPut("/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
     car.ModelYear = inputCar.ModelYear;
         
     car.Price = inputCar.Price;
+
+    car.PlateLastNumber = inputCar.PlateLastNumber;
+    car.TransmissionType = inputCar.TransmissionType;
+    car.Color = inputCar.Color;
 
     await db.SaveChangesAsync();
 
