@@ -1,5 +1,9 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ElectricalCarStoreApi.Context;
+using ElectricalCarStoreApi.Mapper;
 using ElectricalCarStoreApi.Models;
+using ElectricalCarStoreApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,14 +13,27 @@ builder.Services.AddDbContext<CarDb>(options =>
     options.UseSqlite($"Data Source={Path.Join(path, "Cars.db")}");
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+MapperConfiguration mappingConfig = new(mc =>
+{
+    mc.AddProfile(new AutoMapperProfile());
+});
+
+IMapper mapper = mappingConfig.CreateMapper();
+
+builder.Services.AddSingleton(mapper);
+
+builder.Services.AddAutoMapper(typeof(Program));
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetService<CarDb>();
 db?.Database.MigrateAsync();
 
-app.MapGet("/cars", async (CarDb db) =>
-    await db.Cars.ToListAsync());
+app.MapGet("/cars", async (CarDb db, IMapper mapper) =>
+    await db.Cars.ProjectTo<CarListViewModel>(mapper.ConfigurationProvider).ToListAsync());
 
 app.MapGet("/cars/ids", async (CarDb db) =>
     await db.Cars.Select(c => c.Id).ToListAsync());
