@@ -26,6 +26,17 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://127.0.0.1:5173");
+                      });
+});
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -89,5 +100,9 @@ app.MapDelete("/cars/{id}", async (Guid id, CarDb db) =>
 
     return Results.NotFound();
 });
+
+
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
